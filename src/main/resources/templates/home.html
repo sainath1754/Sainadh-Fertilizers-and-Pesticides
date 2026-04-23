@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Home — Sainadh Fertilizers &amp; Pesticides</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;600&display=swap"
+          rel="stylesheet"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<div th:replace="~{fragments/layout :: navbar}"></div>
+
+<!-- MAIN CONTENT -->
+<main class="page-content">
+
+    <!-- Welcome Banner -->
+    <div class="welcome-banner">
+        <h2>Welcome back, <span th:text="${fullName}">User</span>! 👋</h2>
+        <p>Manage fertilizers, pesticides, and your orders from this dashboard.</p>
+        <div class="meta">
+            Role: <strong th:text="${role}">USER</strong>
+            &nbsp;|&nbsp;
+            <span th:text="${email}">user@email.com</span>
+        </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">🌾</div>
+            <div class="stat-label">Fertilizers</div>
+            <div class="stat-value" th:text="${fertilizerCount}">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">🧪</div>
+            <div class="stat-label">Pesticides</div>
+            <div class="stat-value" th:text="${pesticideCount}">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">🛒</div>
+            <div class="stat-label">Cart Items</div>
+            <div class="stat-value" th:text="${cartCount}">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">📦</div>
+            <div class="stat-label">Orders</div>
+            <div class="stat-value" th:text="${orderCount}">0</div>
+        </div>
+    </div>
+
+    <!-- Quick Links -->
+    <h3 class="section-title" style="margin-bottom:1rem;">Quick Links</h3>
+    <div class="quick-links-grid">
+        <a href="/store" class="quick-link-card">
+            <div class="quick-link-icon">🏪</div>
+            <div class="quick-link-title">Browse Store</div>
+            <div class="quick-link-desc">View all fertilizers and pesticides</div>
+        </a>
+        <a href="/cart" class="quick-link-card">
+            <div class="quick-link-icon">🛒</div>
+            <div class="quick-link-title">My Cart</div>
+            <div class="quick-link-desc">View and manage your cart items</div>
+        </a>
+        <a href="/chatbot" class="quick-link-card">
+            <div class="quick-link-icon">💬</div>
+            <div class="quick-link-title">Chatbot</div>
+            <div class="quick-link-desc">Get help from our assistant</div>
+        </a>
+        <a href="/about" class="quick-link-card">
+            <div class="quick-link-icon">ℹ️</div>
+            <div class="quick-link-title">About Us</div>
+            <div class="quick-link-desc">Learn more about our company</div>
+        </a>
+    </div>
+
+    <!-- Info Card -->
+    <div class="card" style="margin-top:2rem;">
+        <h3 class="section-title">About This Portal</h3>
+        <p style="color: var(--text-muted); line-height: 1.8;">
+            This is the e-commerce portal for
+            <strong>Sainadh Fertilizers &amp; Pesticides</strong>.
+            Browse our catalog of quality fertilizers and pesticides,
+            add items to your cart, and place orders — all from one place.
+        </p>
+    </div>
+
+</main>
+
+<!-- FOOTER -->
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+</body>
+</html>

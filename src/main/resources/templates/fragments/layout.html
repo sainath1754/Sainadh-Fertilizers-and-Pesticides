@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- ════════════════════════════════════════════════════════
+     NAVBAR FRAGMENT — included on every authenticated page
+     ════════════════════════════════════════════════════════ -->
+<nav th:fragment="navbar" class="navbar">
+    <a href="/home" class="navbar-brand">
+        <span class="leaf">🌿</span>
+        Sainadh Fertilizers &amp; Pesticides
+    </a>
+    <div class="navbar-links">
+        <a href="/home" class="nav-link">Home</a>
+        <a href="/store" class="nav-link">Store</a>
+        <a href="/cart" class="nav-link">Cart</a>
+        <a href="/chatbot" class="nav-link">Chatbot</a>
+        <a href="/about" class="nav-link">About</a>
+    </div>
+    <div class="navbar-user">
+        <span>Hello, <strong sec:authentication="name">User</strong></span>
+        <form th:action="@{/logout}" method="post" style="margin:0;">
+            <button type="submit" class="btn-logout">Logout</button>
+        </form>
+    </div>
+</nav>
+
+<!-- ════════════════════════════════════════════════════════
+     FOOTER FRAGMENT — included on every page
+     ════════════════════════════════════════════════════════ -->
+<footer th:fragment="footer" class="footer">
+    &copy; 2025 Sainadh Fertilizers &amp; Pesticides. All rights reserved.
+</footer>
+
+</html>

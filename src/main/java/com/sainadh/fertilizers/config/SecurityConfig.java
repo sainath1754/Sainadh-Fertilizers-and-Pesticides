@@ -48,13 +48,13 @@ public class SecurityConfig {
             // CSRF protection is ON — Thymeleaf injects the token automatically
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
-                .requestMatchers("/login", "/error").permitAll()
+                .requestMatchers("/login", "/register", "/error").permitAll()
                 .anyRequest().authenticated()          // All other pages need login
             )
             .formLogin(form -> form
                 .loginPage("/login")                   // Our custom login page
                 .loginProcessingUrl("/login")          // Spring Security handles POST
-                .defaultSuccessUrl("/landing", true)
+                .defaultSuccessUrl("/home", true)
                 .failureUrl("/login?error=true")
                 .successHandler(loginSuccessHandler())
                 .failureHandler(loginFailureHandler())
@@ -81,7 +81,7 @@ public class SecurityConfig {
     private AuthenticationSuccessHandler loginSuccessHandler() {
         return (request, response, authentication) -> {
             userDetailsService.handleLoginSuccess(authentication.getName());
-            response.sendRedirect("/landing");
+            response.sendRedirect("/home");
         };
     }
 

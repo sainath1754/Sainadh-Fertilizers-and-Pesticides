@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta name="robots" content="noindex"/>  <!-- Don't index login page -->
-    <title>Login — Sainadh Fertilizers & Pesticides</title>
+    <meta name="robots" content="noindex"/>
+    <title>Login — Sainadh Fertilizers &amp; Pesticides</title>
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" th:href="@{/css/style.css}"/>
@@ -14,7 +14,7 @@
     <div class="login-card">
         <div class="login-logo">🌿</div>
         <h1>Sainadh Fertilizers</h1>
-        <p class="subtitle">& Pesticides Management Portal</p>
+        <p class="subtitle">&amp; Pesticides Management Portal</p>
 
         <!-- Error / Success Messages -->
         <div th:if="${errorMsg}" class="alert alert-danger">
@@ -47,6 +47,10 @@
             </div>
             <button type="submit" class="btn-login">Sign In</button>
         </form>
+
+        <p class="register-link">
+            Don't have an account? <a th:href="@{/register}">Register here</a>
+        </p>
     </div>
 </div>
 </body>

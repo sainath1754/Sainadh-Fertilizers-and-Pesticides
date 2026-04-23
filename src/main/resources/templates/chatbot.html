@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Chatbot — Sainadh Fertilizers &amp; Pesticides</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;600&display=swap"
+          rel="stylesheet"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<div th:replace="~{fragments/layout :: navbar}"></div>
+
+<!-- MAIN CONTENT -->
+<main class="page-content">
+
+    <h2 class="page-title">💬 Agricultural Assistant</h2>
+    <p class="page-subtitle">Ask questions about fertilizers, pesticides, and crop care</p>
+
+    <!-- Chat Container -->
+    <div class="chat-container">
+        <div class="chat-messages" id="chatMessages">
+            <!-- Bot welcome message -->
+            <div class="chat-message bot-message">
+                <div class="message-avatar">🌿</div>
+                <div class="message-bubble">
+                    Hello! I'm your agricultural assistant. I can help you with questions about
+                    fertilizers, pesticides, and crop care. How can I help you today?
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Input -->
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" class="chat-input"
+                   placeholder="Type your question here..." autocomplete="off"/>
+            <button id="sendBtn" class="btn-send" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <div class="card" style="margin-top:1.5rem;">
+        <p style="color: var(--text-muted); font-size:0.85rem; text-align:center;">
+            <strong>Note:</strong> This is a demo chatbot interface. Full AI integration will be added in a future update.
+        </p>
+    </div>
+
+</main>
+
+<!-- FOOTER -->
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+<!-- Chatbot JavaScript (UI only — no backend) -->
+<script>
+    // Predefined responses for demo purposes
+    var responses = {
+        "hello": "Hello! How can I help you with farming today?",
+        "hi": "Hi there! Ask me anything about fertilizers or pesticides.",
+        "fertilizer": "We offer Urea, DAP, MOP, NPK 20-20-20, Super Phosphate, and Organic Vermicompost. Visit our Store to see all products!",
+        "pesticide": "Our pesticide range includes Chlorpyrifos, Imidacloprid, Mancozeb, Glyphosate, Neem Oil, and Cypermethrin. Check the Store for details!",
+        "urea": "Urea (46-0-0) is a high nitrogen fertilizer best for leafy crop growth. Price: ₹350/bag.",
+        "dap": "DAP (18-46-0) is great for root development and early plant growth. Price: ₹1350/bag.",
+        "neem": "Neem Oil Extract is an organic bio-pesticide that controls sucking pests and fungal infections. Price: ₹280/bottle.",
+        "price": "Our products range from ₹250 to ₹1350. Visit the Store page for detailed pricing.",
+        "order": "You can place orders through our Store page. Add items to cart and checkout!",
+        "help": "I can help with: product info, prices, crop care tips, and order guidance. Just ask!",
+        "thanks": "You're welcome! Happy farming! 🌾",
+        "thank you": "You're welcome! Let me know if you need anything else.",
+        "bye": "Goodbye! Wishing you a great harvest! 🌿"
+    };
+
+    function sendMessage() {
+        var input = document.getElementById('chatInput');
+        var message = input.value.trim();
+        if (message === '') return;
+
+        // Add user message
+        addMessage(message, 'user');
+        input.value = '';
+
+        // Generate bot response after a short delay
+        setTimeout(function() {
+            var reply = getBotReply(message);
+            addMessage(reply, 'bot');
+        }, 600);
+    }
+
+    function addMessage(text, sender) {
+        var container = document.getElementById('chatMessages');
+        var div = document.createElement('div');
+        div.className = 'chat-message ' + sender + '-message';
+
+        var avatar = document.createElement('div');
+        avatar.className = 'message-avatar';
+        avatar.textContent = sender === 'bot' ? '🌿' : '👤';
+
+        var bubble = document.createElement('div');
+        bubble.className = 'message-bubble';
+        bubble.textContent = text;
+
+        div.appendChild(avatar);
+        div.appendChild(bubble);
+        container.appendChild(div);
+
+        // Scroll to bottom
+        container.scrollTop = container.scrollHeight;
+    }
+
+    function getBotReply(message) {
+        var lower = message.toLowerCase();
+        for (var key in responses) {
+            if (lower.indexOf(key) !== -1) {
+                return responses[key];
+            }
+        }
+        return "I'm not sure about that. You can ask me about fertilizers, pesticides, prices, or orders. For detailed help, please contact us at sainadh1754@gmail.com.";
+    }
+
+    // Allow Enter key to send message
+    document.getElementById('chatInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+</script>
+
+</body>
+</html>

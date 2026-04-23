@@ -1,0 +1,116 @@
+-- ═══════════════════════════════════════════════════════════════════
+-- Sainadh Fertilizers & Pesticides — MySQL Database Setup Commands
+-- ═══════════════════════════════════════════════════════════════════
+-- Run these commands in MySQL Workbench to create the database.
+-- Tables will be auto-created by Hibernate (ddl-auto=update) on
+-- first application startup. These commands are only for the
+-- initial database creation.
+-- ═══════════════════════════════════════════════════════════════════
+
+-- Step 1: Create the database
+CREATE DATABASE IF NOT EXISTS sainadh_fertilizers;
+
+-- Step 2: Select the database
+USE sainadh_fertilizers;
+
+-- ═══════════════════════════════════════════════════════════════════
+-- NOTE: The tables below are AUTO-CREATED by Spring Boot / Hibernate
+-- when you run the application for the first time. You do NOT need
+-- to run these manually. They are provided here for reference only.
+-- ═══════════════════════════════════════════════════════════════════
+
+-- Table: users
+-- Stores registered user accounts (admin + regular users)
+CREATE TABLE IF NOT EXISTS users (
+    id              BIGINT AUTO_INCREMENT PRIMARY KEY,
+    username        VARCHAR(50)  NOT NULL UNIQUE,
+    password        VARCHAR(255) NOT NULL,
+    email           VARCHAR(255) NOT NULL UNIQUE,
+    full_name       VARCHAR(255) NOT NULL,
+    role            VARCHAR(20)  NOT NULL DEFAULT 'USER',
+    enabled         BOOLEAN      NOT NULL DEFAULT TRUE,
+    failed_attempts INT          DEFAULT 0,
+    locked          BOOLEAN      NOT NULL DEFAULT FALSE,
+    created_at      DATETIME,
+    updated_at      DATETIME
+);
+
+-- Table: products
+-- Stores fertilizer and pesticide product catalog
+CREATE TABLE IF NOT EXISTS products (
+    id          BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name        VARCHAR(255) NOT NULL,
+    description VARCHAR(500),
+    price       DOUBLE       NOT NULL,
+    category    VARCHAR(50)  NOT NULL,
+    image_url   VARCHAR(255),
+    stock       INT          NOT NULL DEFAULT 100
+);
+
+-- Table: cart_items
+-- Stores items currently in user shopping carts
+CREATE TABLE IF NOT EXISTS cart_items (
+    id         BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id    BIGINT NOT NULL,
+    product_id BIGINT NOT NULL,
+    quantity   INT    NOT NULL DEFAULT 1,
+    FOREIGN KEY (user_id)    REFERENCES users(id),
+    FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+-- Table: orders
+-- Stores placed order records
+CREATE TABLE IF NOT EXISTS orders (
+    id           BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id      BIGINT   NOT NULL,
+    total_amount DOUBLE   NOT NULL,
+    status       VARCHAR(20) NOT NULL DEFAULT 'PLACED',
+    ordered_at   DATETIME,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- Table: order_items
+-- Stores individual products within each order
+CREATE TABLE IF NOT EXISTS order_items (
+    id         BIGINT AUTO_INCREMENT PRIMARY KEY,
+    order_id   BIGINT NOT NULL,
+    product_id BIGINT NOT NULL,
+    quantity   INT    NOT NULL,
+    price      DOUBLE NOT NULL,
+    FOREIGN KEY (order_id)   REFERENCES orders(id),
+    FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+-- ═══════════════════════════════════════════════════════════════════
+-- USEFUL QUERIES (for testing / debugging)
+-- ═══════════════════════════════════════════════════════════════════
+
+-- View all users
+SELECT * FROM users;
+
+-- View all products
+SELECT * FROM products;
+
+-- View all cart items with product names
+SELECT ci.id, u.username, p.name, ci.quantity, p.price
+FROM cart_items ci
+JOIN users u ON ci.user_id = u.id
+JOIN products p ON ci.product_id = p.id;
+
+-- View all orders with user info
+SELECT o.id, u.username, o.total_amount, o.status, o.ordered_at
+FROM orders o
+JOIN users u ON o.user_id = u.id
+ORDER BY o.ordered_at DESC;
+
+-- View order details
+SELECT o.id AS order_id, p.name, oi.quantity, oi.price
+FROM order_items oi
+JOIN orders o ON oi.order_id = o.id
+JOIN products p ON oi.product_id = p.id;
+
+-- Count products by category
+SELECT category, COUNT(*) AS total FROM products GROUP BY category;
+
+-- Reset a locked user account (replace 'username_here')
+UPDATE users SET locked = FALSE, failed_attempts = 0 WHERE username = 'username_here';

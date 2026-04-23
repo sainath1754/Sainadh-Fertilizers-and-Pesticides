@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>About — Sainadh Fertilizers &amp; Pesticides</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;600&display=swap"
+          rel="stylesheet"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<div th:replace="~{fragments/layout :: navbar}"></div>
+
+<!-- MAIN CONTENT -->
+<main class="page-content">
+
+    <h2 class="page-title">ℹ️ About Us</h2>
+    <p class="page-subtitle">Connecting farmers with quality agricultural inputs since 2020</p>
+
+    <!-- About Section -->
+    <div class="card">
+        <h3 class="section-title">Our Story</h3>
+        <p style="color: var(--text-muted); line-height: 1.8;">
+            <strong>Sainadh Fertilizers &amp; Pesticides</strong> was founded with a simple mission —
+            to make quality agricultural inputs accessible to every farmer. We understand the challenges
+            farmers face in finding the right fertilizers and pesticides for their crops, and we aim to
+            bridge that gap through technology.
+        </p>
+        <p style="color: var(--text-muted); line-height: 1.8; margin-top: 1rem;">
+            Our e-commerce platform allows farmers to browse, compare, and purchase fertilizers
+            and pesticides from the comfort of their home. We offer a curated selection of products
+            from trusted manufacturers, ensuring quality and reliability.
+        </p>
+    </div>
+
+    <!-- Mission & Vision -->
+    <div class="about-grid">
+        <div class="card">
+            <h3 class="section-title">🎯 Our Mission</h3>
+            <p style="color: var(--text-muted); line-height: 1.8;">
+                To digitally empower farmers by providing a reliable, easy-to-use platform
+                for purchasing agricultural inputs. We strive to reduce the gap between
+                fertilizer suppliers and farmers through technology.
+            </p>
+        </div>
+        <div class="card">
+            <h3 class="section-title">🔭 Our Vision</h3>
+            <p style="color: var(--text-muted); line-height: 1.8;">
+                To become the leading agriculture e-commerce platform in India, serving
+                millions of farmers with quality products, expert advice, and doorstep
+                delivery across all states.
+            </p>
+        </div>
+    </div>
+
+    <!-- Features -->
+    <div class="card">
+        <h3 class="section-title">✨ Why Choose Us</h3>
+        <div class="features-list">
+            <div class="feature-item">
+                <span class="feature-icon">✅</span>
+                <div>
+                    <strong>Quality Products</strong>
+                    <p>All products sourced from certified and trusted manufacturers.</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">💰</span>
+                <div>
+                    <strong>Competitive Prices</strong>
+                    <p>Fair pricing with no middlemen — direct from supplier to farmer.</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">🚚</span>
+                <div>
+                    <strong>Easy Ordering</strong>
+                    <p>Simple online ordering with cart and checkout system.</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">💬</span>
+                <div>
+                    <strong>Expert Support</strong>
+                    <p>Agricultural chatbot assistant for product guidance and crop care tips.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Info -->
+    <div class="card">
+        <h3 class="section-title">📞 Contact Us</h3>
+        <div style="color: var(--text-muted); line-height: 2;">
+            <p><strong>Email:</strong> sainadh1754@gmail.com</p>
+            <p><strong>Phone:</strong> +91 98765 43210</p>
+            <p><strong>Address:</strong> Hyderabad, Telangana, India</p>
+        </div>
+    </div>
+
+</main>
+
+<!-- FOOTER -->
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+</body>
+</html>
