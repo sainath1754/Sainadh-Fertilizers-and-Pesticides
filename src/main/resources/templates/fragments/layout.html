@@ -12,10 +12,10 @@
     </a>
     <div class="navbar-links">
         <a href="/home" class="nav-link">Home</a>
+        <a href="/about" class="nav-link">About</a>
         <a href="/store" class="nav-link">Store</a>
         <a href="/cart" class="nav-link">Cart</a>
         <a href="/chatbot" class="nav-link">Chatbot</a>
-        <a href="/about" class="nav-link">About</a>
     </div>
     <div class="navbar-user">
         <span>Hello, <strong sec:authentication="name">User</strong></span>
@@ -29,7 +29,12 @@
      FOOTER FRAGMENT — included on every page
      ════════════════════════════════════════════════════════ -->
 <footer th:fragment="footer" class="footer">
-    &copy; 2025 Sainadh Fertilizers &amp; Pesticides. All rights reserved.
+    <div class="footer-main">
+        &copy; 2025 Sainadh Fertilizers &amp; Pesticides. All rights reserved.
+    </div>
+    <div class="footer-dedication">
+        Dedicated to <strong>Suresh Swamy Naidu Pragada</strong> 💓
+    </div>
 </footer>
 
 </html>
