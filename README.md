@@ -1,244 +1,309 @@
-# 🌿 Sainadh Fertilizers & Pesticides — Agriculture E-Commerce Platform
+# Sainadh Fertilizers & Pesticides
 
-A full-stack agriculture e-commerce web application built with **Spring Boot** and **RESTful APIs** to digitally connect farmers with fertilizer and pesticide suppliers.
-
----
-
-## 📋 Project Overview
-
-This project implements a complete e-commerce platform for agricultural products (fertilizers and pesticides). Farmers can browse the product catalog, add items to their shopping cart, and place orders — all through a simple, clean web interface.
-
-The application follows **MVC architecture** and **SDLC practices**, with **MySQL** for persistent data storage and **Spring Security** for user authentication.
+A full-stack agriculture e-commerce platform built with **Spring Boot 3.2.5**, **Spring Security**, **Spring Data JPA**, **Redis**, and **JWT authentication**.
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
-| Layer        | Technology                         |
-|--------------|------------------------------------|
-| Backend      | Java 17, Spring Boot 3.2.5         |
-| Web          | Spring MVC, RESTful APIs           |
-| Security     | Spring Security, BCrypt hashing    |
-| Database     | MySQL 8.x, Spring Data JPA         |
-| Frontend     | Thymeleaf, HTML5, CSS3, JavaScript |
-| Build Tool   | Maven                              |
-| ORM          | Hibernate (via Spring Data JPA)    |
-| Dev Tools    | Lombok, Spring DevTools            |
-
----
-
-## ✨ Features
-
-### Authentication
-- **Login** — Secure login with username and password
-- **Register** — New user registration with form validation
-- **Logout** — Session-based logout with CSRF protection
-- **Account Lockout** — Locks account after 5 failed login attempts
-
-### Pages (after login)
-- **Home** — Dashboard with stats (product counts, cart items, orders) and quick links
-- **Store** — Product catalog with category filters (Fertilizers / Pesticides), add-to-cart
-- **Cart** — View cart items, update quantity, remove items, checkout (place order)
-- **Chatbot** — Chat interface for agricultural queries (UI-only demo, no backend AI)
-- **About** — Our emotional story, mission, vision, features, and contact details
-
-### Technical
-- MVC architecture with separate Model, Controller, Service, Repository layers
-- CSRF protection on all POST forms
-- Session management (30-minute timeout, max 1 session per user)
-- Responsive design for mobile and desktop
-- Seed data (admin user + 12 products) loaded on first startup
+| Layer | Technology |
+|---|---|
+| Language | Java 17 |
+| Framework | Spring Boot 3.2.5 |
+| Web | Spring MVC, Thymeleaf |
+| Security | Spring Security 6, JWT (jjwt 0.12.5), BCrypt |
+| Persistence | Spring Data JPA, Hibernate, MySQL 8.x |
+| Caching | Spring Cache Abstraction, Redis |
+| Validation | Jakarta Bean Validation |
+| Build | Maven |
+| Utilities | Lombok, Spring DevTools |
 
 ---
 
-## 📁 Project Structure
+## Architecture
+
+The application follows a layered **MVC architecture**:
 
 ```
-fertilizers/
-├── src/main/java/com/sainadh/fertilizers/
-│   ├── FertilizersApplication.java          # Main Spring Boot entry point
-│   ├── config/
-│   │   └── SecurityConfig.java              # Spring Security configuration
-│   ├── controller/
-│   │   ├── AuthController.java              # Login, Register endpoints
-│   │   ├── HomeController.java              # Home dashboard
-│   │   ├── StoreController.java             # Product catalog, add to cart
-│   │   ├── CartController.java              # Cart operations, checkout
-│   │   ├── ChatbotController.java           # Chatbot UI page
-│   │   └── AboutController.java             # About page
-│   ├── model/
-│   │   ├── User.java                        # User entity
-│   │   ├── Product.java                     # Product entity
-│   │   ├── CartItem.java                    # Cart item entity
-│   │   ├── OrderRecord.java                 # Order entity
-│   │   └── OrderItem.java                   # Order line item entity
-│   ├── repository/
-│   │   ├── UserRepository.java              # User data access
-│   │   ├── ProductRepository.java           # Product data access
-│   │   ├── CartItemRepository.java          # Cart data access
-│   │   ├── OrderRepository.java             # Order data access
-│   │   └── OrderItemRepository.java         # Order item data access
-│   ├── service/
-│   │   ├── UserService.java                 # Registration logic
-│   │   ├── ProductService.java              # Product catalog logic
-│   │   ├── CartService.java                 # Cart operations logic
-│   │   ├── OrderService.java                # Order placement logic
-│   │   ├── CustomUserDetailsService.java    # Spring Security user loader
-│   │   └── LoginAuditService.java           # Login audit (placeholder)
-│   └── init/
-│       └── DataInitializer.java             # Seeds admin user + products
-├── src/main/resources/
-│   ├── application.properties               # DB config, server settings
-│   ├── static/css/
-│   │   └── style.css                        # All page styles
-│   └── templates/
-│       ├── fragments/
-│       │   └── layout.html                  # Shared navbar & footer
-│       ├── login.html                       # Login page
-│       ├── register.html                    # Registration page
-│       ├── home.html                        # Home dashboard
-│       ├── store.html                       # Product store
-│       ├── cart.html                        # Shopping cart
-│       ├── chatbot.html                     # Chatbot interface
-│       └── about.html                       # About us page
-├── pom.xml                                  # Maven dependencies
-├── commands.txt                             # MySQL setup commands
-└── README.md                               # This file
+┌──────────────────────────────────────────────────────┐
+│                    Client (Browser)                  │
+└──────────────────┬───────────────────────────────────┘
+                   │  HTTP / HTTPS
+┌──────────────────▼───────────────────────────────────┐
+│              Spring Security Filter Chain            │
+│         (JwtAuthFilter → FormLogin → CSRF)           │
+└──────────────────┬───────────────────────────────────┘
+                   │
+┌──────────────────▼───────────────────────────────────┐
+│                   Controller Layer                   │
+│  AuthController │ HomeController │ StoreController   │
+│  CartController │ ApiAuthController │ AboutController│
+└──────────────────┬───────────────────────────────────┘
+                   │
+┌──────────────────▼───────────────────────────────────┐
+│                    Service Layer                     │
+│  UserService │ ProductService │ CartService          │
+│  OrderService │ CustomUserDetailsService             │
+└─────────┬────────────────────────────┬───────────────┘
+          │                            │
+┌─────────▼──────────┐   ┌────────────▼───────────────┐
+│  Repository Layer  │   │      Redis Cache Layer     │
+│  (Spring Data JPA) │   │  (Product & Cart caching)  │
+└─────────┬──────────┘   └────────────────────────────┘
+          │
+┌─────────▼──────────┐
+│     MySQL 8.x      │
+└────────────────────┘
 ```
 
 ---
 
-## 🎨 UI/UX Enhancements (Latest Update)
+## Security
 
-The following frontend improvements were made to elevate the user experience:
+### Authentication Flow
 
-### 🌈 Color Palette Overhaul
-- Upgraded to a deeper emerald green palette (`#0b3d2c`, `#14644a`, `#27ae76`)
-- Added warm amber (`#f0a500`) and orange (`#ff6b35`) accent colors
-- Body background changed to a multi-stop gradient for depth
-- Login page uses a rich 4-stop gradient
+The application uses a **dual authentication** strategy:
 
-### ✨ Animations
-- **6 keyframe animations** added: `fadeInUp`, `fadeIn`, `slideDown`, `pulse`, `shimmer`, `float`
-- Navbar slides down smoothly on page load
-- Cards and stat blocks fade in with staggered delays
-- Product and stat cards glow on hover with floating icons
-- Welcome banner has a radial gradient overlay effect
-- Nav links have animated underline indicators on hover
-- Smooth cubic-bezier transitions throughout the app
+1. **Session-Based (Web UI)** — Spring Security form login with CSRF protection. On successful login, a JWT is also issued as an `HttpOnly` cookie.
+2. **JWT-Based (REST API)** — Stateless token authentication for the `/api/**` endpoints. Tokens are validated via `JwtAuthFilter` registered before `UsernamePasswordAuthenticationFilter`.
 
-### 🧭 Navbar Reordered
-- **Before:** Home → Store → Cart → Chatbot → About
-- **After:** Home → About → Store → Cart → Chatbot
-- Logical flow: learn about us first, then shop
+### Security Configuration
 
-### 🌱 Our Story (About Page)
-- Rewrote the "Our Story" section with a heartfelt, emotional narrative
-- Dedicated to the founder's father, **Suresh Swamy Naidu Pragada**, who runs a traditional fertilizer shop in **Pathuru village**, Andhra Pradesh
-- Styled with a warm amber left border and cream gradient background
-- Includes a personal signature with 💓 emoji
+| Feature | Detail |
+|---|---|
+| Password Encoding | BCrypt (strength 12) |
+| CSRF | Enabled (Thymeleaf auto-injects tokens) |
+| Session Policy | Max 1 concurrent session per user |
+| Session Timeout | 30 minutes |
+| Account Lockout | Locks after 5 consecutive failed login attempts |
+| JWT Expiration | 24 hours |
+| JWT Cookie | `HttpOnly`, path `/` |
 
-### 📞 Contact Information Updated
-- **Email:** sainadh1754@gmail.com
-- **Phone:** +91 8019789641
-- **Address:** PATHURU, ANDHRA PRADESH, INDIA
-- Redesigned as a visual grid with emoji icons and clickable links
+### REST API Authentication
 
-### 💓 Footer Dedication
-- Footer now displays: **"Dedicated to Suresh Swamy Naidu Pragada 💓"**
-- Name highlighted in amber/gold color for emphasis
-- Footer background upgraded to a dark gradient
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/auth/register` | Register a new user |
+| `POST` | `/api/auth/login` | Authenticate and receive a JWT |
 
-### 🃏 Card & Component Upgrades
-- Cards have hover shadow elevation effects
-- Stat cards change border color to amber on hover
-- Quick link cards trigger floating icon animation on hover
-- Product cards have glow effect and floating icon on hover
-- Contact section uses styled cards with hover lift effect
-- Logout button uses a gradient with glow shadow
+JWT tokens are signed with HMAC-SHA256 and must be included in the `Authorization: Bearer <token>` header for protected API endpoints.
 
+---
 
-## 🚀 Setup & Run Instructions
+## Caching (Redis)
+
+Redis is used as a caching layer to reduce database load on frequently accessed data.
+
+| Configuration | Value |
+|---|---|
+| Cache Provider | Redis |
+| TTL | 5 minutes (300,000 ms) |
+| Null Caching | Disabled |
+| Fallback | Graceful — application starts without Redis using `RedisFallbackConfig` |
+
+**Cached operations:** Product catalog queries, cart count lookups.
+
+If Redis is unavailable at startup, the application falls back to a no-op cache configuration and continues to serve requests directly from MySQL.
+
+---
+
+## Database Schema
+
+The application uses `spring.jpa.hibernate.ddl-auto=update` — tables are auto-created/updated on startup.
+
+```
+┌─────────────┐       ┌──────────────┐
+│    users     │       │   products   │
+├─────────────┤       ├──────────────┤
+│ id (PK)     │       │ id (PK)      │
+│ username    │       │ name         │
+│ email       │       │ description  │
+│ password    │       │ price        │
+│ role        │       │ category     │
+│ locked      │       │ image_url    │
+│ fail_count  │       └──────┬───────┘
+└──────┬──────┘              │
+       │                     │
+       │    ┌────────────────┤
+       │    │                │
+┌──────▼────▼──┐    ┌───────▼────────┐
+│  cart_items   │    │  order_items   │
+├──────────────┤    ├────────────────┤
+│ id (PK)      │    │ id (PK)        │
+│ user_id (FK) │    │ order_id (FK)  │
+│ product_id   │    │ product_id(FK) │
+│ quantity     │    │ quantity       │
+└──────────────┘    │ price          │
+                    └───────┬────────┘
+                            │
+                    ┌───────▼────────┐
+                    │    orders      │
+                    ├────────────────┤
+                    │ id (PK)        │
+                    │ user_id (FK)   │
+                    │ total_amount   │
+                    │ order_date     │
+                    │ status         │
+                    └────────────────┘
+```
+
+---
+
+## Project Structure
+
+```
+src/main/java/com/sainadh/fertilizers/
+├── FertilizersApplication.java             # Entry point
+├── config/
+│   ├── SecurityConfig.java                 # Spring Security + filter chain
+│   ├── JwtUtil.java                        # JWT generation & validation
+│   ├── JwtAuthFilter.java                  # OncePerRequestFilter for JWT
+│   ├── RedisConfig.java                    # Redis cache manager setup
+│   └── RedisFallbackConfig.java            # Graceful fallback if Redis unavailable
+├── controller/
+│   ├── AuthController.java                 # /login, /register (web)
+│   ├── ApiAuthController.java              # /api/auth/** (REST)
+│   ├── HomeController.java                 # /home
+│   ├── StoreController.java                # /store, /store/add-to-cart
+│   ├── CartController.java                 # /cart, /cart/checkout
+│   ├── ChatbotController.java              # /chatbot
+│   └── AboutController.java               # /about
+├── model/
+│   ├── User.java                           # @Entity — users table
+│   ├── Product.java                        # @Entity — products table
+│   ├── CartItem.java                       # @Entity — cart_items table
+│   ├── OrderRecord.java                    # @Entity — orders table
+│   └── OrderItem.java                      # @Entity — order_items table
+├── repository/
+│   ├── UserRepository.java                 # JpaRepository<User, Long>
+│   ├── ProductRepository.java              # JpaRepository<Product, Long>
+│   ├── CartItemRepository.java             # JpaRepository<CartItem, Long>
+│   ├── OrderRepository.java                # JpaRepository<OrderRecord, Long>
+│   └── OrderItemRepository.java            # JpaRepository<OrderItem, Long>
+├── service/
+│   ├── UserService.java                    # Registration, validation
+│   ├── ProductService.java                 # CRUD + cache integration
+│   ├── CartService.java                    # Add/remove/update cart items
+│   ├── OrderService.java                   # Checkout + order persistence
+│   ├── CustomUserDetailsService.java       # UserDetailsService impl + lockout
+│   └── LoginAuditService.java              # Login audit interface
+└── init/
+    └── DataInitializer.java                # Seeds admin user + 12 products
+
+src/main/resources/
+├── application.properties                  # All configuration
+├── static/css/style.css                    # Stylesheet
+└── templates/                              # Thymeleaf views
+    ├── fragments/layout.html               # Shared navbar & footer
+    ├── login.html
+    ├── register.html
+    ├── home.html
+    ├── store.html
+    ├── cart.html
+    ├── chatbot.html
+    └── about.html
+```
+
+---
+
+## Setup & Run
 
 ### Prerequisites
-- **Java 17** (JDK)
-- **MySQL 8.x** (MySQL Workbench recommended)
-- **Maven** (or use the included `mvnw` wrapper)
 
-### Step 1 — Create the Database
-Open MySQL Workbench and run the commands from `commands.txt`:
+- **Java 17** (JDK)
+- **MySQL 8.x**
+- **Redis** (optional — app works without it)
+- **Maven 3.8+** (or use the included `mvnw` wrapper)
+
+### 1. Create the Database
 
 ```sql
 CREATE DATABASE IF NOT EXISTS sainadh_fertilizers;
-USE sainadh_fertilizers;
 ```
 
-> The application uses `spring.jpa.hibernate.ddl-auto=update`, so all tables will be created automatically on first startup.
+> Tables are auto-created by Hibernate on first startup (`ddl-auto=update`).
 
-### Step 2 — Configure Database Credentials
-Edit `src/main/resources/application.properties` if your MySQL credentials differ:
+### 2. Configure Credentials
+
+Edit `src/main/resources/application.properties`:
 
 ```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/sainadh_fertilizers?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
 spring.datasource.username=root
-spring.datasource.password=Sainadh@1754
+spring.datasource.password=<your_password>
 ```
 
-### Step 3 — Run the Application
+### 3. Start Redis (Optional)
 
-**Using Maven wrapper (Windows):**
 ```bash
+redis-server
+```
+
+If Redis is not running, the app logs a warning and falls back to direct DB queries.
+
+### 4. Run the Application
+
+```bash
+# Windows
 mvnw.cmd spring-boot:run
-```
 
-**Using Maven wrapper (Linux/Mac):**
-```bash
+# Linux / macOS
 ./mvnw spring-boot:run
-```
 
-**Using Maven directly:**
-```bash
+# Or with Maven installed globally
 mvn spring-boot:run
 ```
 
-### Step 4 — Access the Application
-Open your browser and go to: **http://localhost:8080**
+### 5. Access
 
-### Default Admin Login
-| Field    | Value          |
-|----------|----------------|
-| Username | `admin`        |
+| URL | Description |
+|---|---|
+| `http://localhost:8080` | Web application |
+| `http://localhost:8080/api/auth/login` | REST API login |
+
+### Default Admin Credentials
+
+| Field | Value |
+|---|---|
+| Username | `admin` |
 | Password | `Sainadh@1754` |
 
 ---
 
-## 📊 Database Schema
+## Key Dependencies
 
-The application creates these tables automatically:
-
-| Table         | Description                              |
-|---------------|------------------------------------------|
-| `users`       | Registered users (username, email, role)  |
-| `products`    | Fertilizers and pesticides catalog        |
-| `cart_items`  | Items in user shopping carts             |
-| `orders`      | Placed order records                     |
-| `order_items` | Individual items within each order       |
-
----
-
-## 👤 Author
-
-**Sainadh** — sainadh1754@gmail.com  
-📱 +91 8019789641  
-📍 Pathuru, Andhra Pradesh, India
+```xml
+spring-boot-starter-web
+spring-boot-starter-security
+spring-boot-starter-data-jpa
+spring-boot-starter-data-redis
+spring-boot-starter-cache
+spring-boot-starter-validation
+spring-boot-starter-thymeleaf
+thymeleaf-extras-springsecurity6
+mysql-connector-j
+jjwt-api / jjwt-impl / jjwt-jackson  (0.12.5)
+lombok
+spring-boot-devtools
+```
 
 ---
 
-## 💓 Dedication
+## Configuration Reference
 
-This project is lovingly dedicated to **Suresh Swamy Naidu Pragada** — a father whose traditional fertilizer shop in Pathuru village inspired every line of code.
+| Property | Value | Purpose |
+|---|---|---|
+| `server.port` | `8080` | Application port |
+| `spring.jpa.hibernate.ddl-auto` | `update` | Auto schema migration |
+| `spring.jpa.show-sql` | `true` | Log SQL statements |
+| `spring.data.redis.host` | `localhost` | Redis host |
+| `spring.data.redis.port` | `6379` | Redis port |
+| `spring.cache.redis.time-to-live` | `300000` | Cache TTL (5 min) |
+| `app.jwt.expiration-ms` | `86400000` | JWT token lifetime (24h) |
+| `server.servlet.session.timeout` | `30m` | HTTP session timeout |
 
 ---
 
-## 📜 License
+## License
 
 This project is developed for educational purposes as part of a Spring Boot web development course.
