@@ -8,15 +8,15 @@ A full-stack agriculture e-commerce platform built with **Spring Boot 3.2.5**, *
 
 | Layer | Technology |
 |---|---|
-| Language | Java 17 |
+| Language | Java 25 |
 | Framework | Spring Boot 3.2.5 |
 | Web | Spring MVC, Thymeleaf |
 | Security | Spring Security 6, JWT (jjwt 0.12.5), BCrypt |
-| Persistence | Spring Data JPA, Hibernate, MySQL 8.x |
+| Persistence | Spring Data JPA, Hibernate 6.4, MySQL 8.x |
 | Caching | Spring Cache Abstraction, Redis |
 | Validation | Jakarta Bean Validation |
-| Build | Maven |
-| Utilities | Lombok, Spring DevTools |
+| Build | Maven (wrapper included) |
+| Utilities | Lombok 1.18.46, Spring DevTools |
 
 ---
 
@@ -210,7 +210,7 @@ src/main/resources/
 
 ### Prerequisites
 
-- **Java 17** (JDK)
+- **Java 25** (JDK 25.0.1+ recommended)
 - **MySQL 8.x**
 - **Redis** (optional — app works without it)
 - **Maven 3.8+** (or use the included `mvnw` wrapper)
@@ -241,12 +241,18 @@ redis-server
 
 If Redis is not running, the app logs a warning and falls back to direct DB queries.
 
-### 4. Run the Application
+### 4. Build & Run the Application
 
 ```bash
+# Clean build (recommended after dependency changes)
+# Windows
+mvnw.cmd clean compile
+# Linux / macOS
+./mvnw clean compile
+
+# Run the application
 # Windows
 mvnw.cmd spring-boot:run
-
 # Linux / macOS
 ./mvnw spring-boot:run
 
@@ -283,7 +289,7 @@ spring-boot-starter-thymeleaf
 thymeleaf-extras-springsecurity6
 mysql-connector-j
 jjwt-api / jjwt-impl / jjwt-jackson  (0.12.5)
-lombok
+lombok                                (1.18.46)
 spring-boot-devtools
 ```
 
@@ -304,6 +310,17 @@ spring-boot-devtools
 
 ---
 
+## Troubleshooting
+
+| Issue | Cause | Fix |
+|---|---|---|
+| `ExceptionInInitializerError: TypeTag :: UNKNOWN` | Lombok version incompatible with Java runtime | Upgrade Lombok to 1.18.40+ (1.18.46 for Java 25/26) |
+| `JwtAuthFilter: Constructor threw exception` | Lombok annotation processing failed at compile time | Run `mvnw clean compile` to rebuild with correct Lombok |
+| `sun.misc.Unsafe::objectFieldOffset` warnings | Lombok/Netty using deprecated internal APIs | Non-fatal; will be addressed in future library releases |
+| Redis connection refused | Redis server not running | Start Redis, or ignore — app falls back to no-op cache |
+
+---
+
 ## License
 
-This project is developed for educational purposes as part of a Spring Boot web development course.
+Every line of code in this project carries the weight of gratitude I can never fully express — this is for you, Daddy💗.
