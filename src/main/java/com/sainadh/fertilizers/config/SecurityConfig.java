@@ -1,6 +1,7 @@
 package com.sainadh.fertilizers.config;
 
 import com.sainadh.fertilizers.service.CustomUserDetailsService;
+import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.*;
 import org.springframework.security.authentication.*;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.*;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -19,6 +21,8 @@ import org.springframework.security.web.authentication.*;
 public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
+    private final JwtUtil jwtUtil;
+    private final JwtAuthFilter jwtAuthFilter;
 
     // ── BCrypt Password Encoder (strength 12) ─────────────────────
     @Bean
@@ -49,6 +53,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
                 .requestMatchers("/login", "/register", "/error").permitAll()
+                .requestMatchers("/api/auth/**").permitAll()     // REST API auth endpoints
                 .anyRequest().authenticated()          // All other pages need login
             )
             .formLogin(form -> form
@@ -64,7 +69,7 @@ public class SecurityConfig {
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/login?logout=true")
                 .invalidateHttpSession(true)           // Destroy session on logout
-                .deleteCookies("JSESSIONID")           // Remove session cookie
+                .deleteCookies("JSESSIONID", "jwt")    // Remove session + JWT cookies
                 .clearAuthentication(true)
                 .permitAll()
             )
@@ -72,15 +77,30 @@ public class SecurityConfig {
                 .maximumSessions(1)                    // Max 1 active session per user
                 .expiredUrl("/login?expired=true")
             )
-            .authenticationProvider(authenticationProvider());
+            .authenticationProvider(authenticationProvider())
+            // Add JWT filter before the default authentication filter
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    // ── Success: reset failed attempts counter in DB ───────────────
+    // ── Success: reset failed attempts + issue JWT cookie ──────────
     private AuthenticationSuccessHandler loginSuccessHandler() {
         return (request, response, authentication) -> {
             userDetailsService.handleLoginSuccess(authentication.getName());
+
+            // Generate JWT and set as HttpOnly cookie
+            var userDetails = (org.springframework.security.core.userdetails.UserDetails)
+                    authentication.getPrincipal();
+            String token = jwtUtil.generateToken(userDetails);
+
+            Cookie jwtCookie = new Cookie("jwt", token);
+            jwtCookie.setHttpOnly(true);       // Prevents XSS access
+            jwtCookie.setSecure(false);        // Set to true in production (HTTPS)
+            jwtCookie.setPath("/");
+            jwtCookie.setMaxAge(24 * 60 * 60); // 24 hours
+            response.addCookie(jwtCookie);
+
             response.sendRedirect("/home");
         };
     }

@@ -8,11 +8,19 @@ import com.sainadh.fertilizers.repository.ProductRepository;
 import com.sainadh.fertilizers.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Cart Service — handles shopping cart operations.
+ *
+ * Redis caching is used for cart count (displayed in navbar badge).
+ * Cart modifications automatically evict the cached count.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -29,6 +37,7 @@ public class CartService {
 
     // Add product to cart (or increase quantity if already exists)
     @Transactional
+    @CacheEvict(value = "cartCount", key = "#userId")
     public void addToCart(Long userId, Long productId, int qty) {
         Optional<CartItem> existing = cartItemRepository.findByUserIdAndProductId(userId, productId);
 
@@ -73,6 +82,7 @@ public class CartService {
 
     // Clear entire cart for a user
     @Transactional
+    @CacheEvict(value = "cartCount", key = "#userId")
     public void clearCart(Long userId) {
         cartItemRepository.deleteByUserId(userId);
     }
@@ -87,8 +97,10 @@ public class CartService {
         return total;
     }
 
-    // Count items in cart
+    // Count items in cart — CACHED
+    @Cacheable(value = "cartCount", key = "#userId")
     public long getCartCount(Long userId) {
+        log.debug("🛒 Fetching cart count from database for user {} (cache miss)", userId);
         return cartItemRepository.countByUserId(userId);
     }
 }
