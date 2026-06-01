@@ -2,8 +2,8 @@ package com.sainadh.fertilizers.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
+import org.springframework.cache.annotation.CachingConfigurer;
 import org.springframework.cache.interceptor.CacheErrorHandler;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -13,13 +13,17 @@ import org.springframework.context.annotation.Configuration;
  * the application continues to work by silently falling back
  * to the database. Cache failures are logged but never crash
  * the application.
+ *
+ * Implements CachingConfigurer so Spring actually picks up
+ * our custom CacheErrorHandler. Without this interface,
+ * the bean would be ignored.
  */
 @Slf4j
 @Configuration
-public class RedisFallbackConfig {
+public class RedisFallbackConfig implements CachingConfigurer {
 
-    @Bean
-    public CacheErrorHandler cacheErrorHandler() {
+    @Override
+    public CacheErrorHandler errorHandler() {
         return new CacheErrorHandler() {
 
             @Override
