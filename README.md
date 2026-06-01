@@ -323,4 +323,4 @@ spring-boot-devtools
 
 ## License
 
-This project is developed for educational purposes as part of a Spring Boot web development course.
+Every line of code in this project carries the weight of gratitude I can never fully express — this is for you, Daddy💗.
