@@ -114,3 +114,38 @@ SELECT category, COUNT(*) AS total FROM products GROUP BY category;
 
 -- Reset a locked user account (replace 'username_here')
 UPDATE users SET locked = FALSE, failed_attempts = 0 WHERE username = 'username_here';
+
+-- ═══════════════════════════════════════════════════════════════════
+-- FRONTEND UI/UX CHANGELOG (Latest Update — June 2026)
+-- ═══════════════════════════════════════════════════════════════════
+-- These are NOT database changes. This section documents recent
+-- frontend modifications for project reference.
+-- ═══════════════════════════════════════════════════════════════════
+--
+-- FILES MODIFIED:
+--   1. src/main/resources/templates/fragments/layout.html
+--      - Navbar reordered: Home → About → Store → Cart → Chatbot
+--      - Footer updated: Added "Dedicated to Suresh Swamy Naidu Pragada 💓"
+--
+--   2. src/main/resources/templates/about.html
+--      - "Our Story" rewritten with emotional narrative about father's
+--        traditional fertilizer shop in Pathuru village, Andhra Pradesh
+--      - Contact info updated:
+--          Email: sainadh1754@gmail.com
+--          Phone: +91 8019789641
+--          Address: PATHURU, ANDHRA PRADESH, INDIA
+--      - Contact section redesigned as visual grid with icons
+--
+--   3. src/main/resources/static/css/style.css
+--      - Color palette upgraded: deeper emerald greens + amber/orange accents
+--      - 6 keyframe animations added: fadeInUp, fadeIn, slideDown,
+--        pulse, shimmer, float
+--      - Navbar: gradient background, slide-down animation, hover underlines
+--      - Cards: staggered fade-in, glow hover, floating icons
+--      - Welcome banner: radial gradient overlay
+--      - Login page: 4-stop gradient, fade-in animation
+--      - Footer: dark gradient, dedication line with gold highlight
+--      - New styles: .our-story-card, .story-signature, .contact-grid,
+--        .contact-item, .contact-icon, .footer-main, .footer-dedication
+--
+-- ═══════════════════════════════════════════════════════════════════

@@ -40,7 +40,7 @@ The application follows **MVC architecture** and **SDLC practices**, with **MySQ
 - **Store** — Product catalog with category filters (Fertilizers / Pesticides), add-to-cart
 - **Cart** — View cart items, update quantity, remove items, checkout (place order)
 - **Chatbot** — Chat interface for agricultural queries (UI-only demo, no backend AI)
-- **About** — Company info, mission, vision, features, and contact details
+- **About** — Our emotional story, mission, vision, features, and contact details
 
 ### Technical
 - MVC architecture with separate Model, Controller, Service, Repository layers
@@ -107,6 +107,56 @@ fertilizers/
 ```
 
 ---
+
+## 🎨 UI/UX Enhancements (Latest Update)
+
+The following frontend improvements were made to elevate the user experience:
+
+### 🌈 Color Palette Overhaul
+- Upgraded to a deeper emerald green palette (`#0b3d2c`, `#14644a`, `#27ae76`)
+- Added warm amber (`#f0a500`) and orange (`#ff6b35`) accent colors
+- Body background changed to a multi-stop gradient for depth
+- Login page uses a rich 4-stop gradient
+
+### ✨ Animations
+- **6 keyframe animations** added: `fadeInUp`, `fadeIn`, `slideDown`, `pulse`, `shimmer`, `float`
+- Navbar slides down smoothly on page load
+- Cards and stat blocks fade in with staggered delays
+- Product and stat cards glow on hover with floating icons
+- Welcome banner has a radial gradient overlay effect
+- Nav links have animated underline indicators on hover
+- Smooth cubic-bezier transitions throughout the app
+
+### 🧭 Navbar Reordered
+- **Before:** Home → Store → Cart → Chatbot → About
+- **After:** Home → About → Store → Cart → Chatbot
+- Logical flow: learn about us first, then shop
+
+### 🌱 Our Story (About Page)
+- Rewrote the "Our Story" section with a heartfelt, emotional narrative
+- Dedicated to the founder's father, **Suresh Swamy Naidu Pragada**, who runs a traditional fertilizer shop in **Pathuru village**, Andhra Pradesh
+- Styled with a warm amber left border and cream gradient background
+- Includes a personal signature with 💓 emoji
+
+### 📞 Contact Information Updated
+- **Email:** sainadh1754@gmail.com
+- **Phone:** +91 8019789641
+- **Address:** PATHURU, ANDHRA PRADESH, INDIA
+- Redesigned as a visual grid with emoji icons and clickable links
+
+### 💓 Footer Dedication
+- Footer now displays: **"Dedicated to Suresh Swamy Naidu Pragada 💓"**
+- Name highlighted in amber/gold color for emphasis
+- Footer background upgraded to a dark gradient
+
+### 🃏 Card & Component Upgrades
+- Cards have hover shadow elevation effects
+- Stat cards change border color to amber on hover
+- Quick link cards trigger floating icon animation on hover
+- Product cards have glow effect and floating icon on hover
+- Contact section uses styled cards with hover lift effect
+- Logout button uses a gradient with glow shadow
+
 
 ## 🚀 Setup & Run Instructions
 
@@ -177,7 +227,15 @@ The application creates these tables automatically:
 
 ## 👤 Author
 
-**Sainadh** — sainadh1754@gmail.com
+**Sainadh** — sainadh1754@gmail.com  
+📱 +91 8019789641  
+📍 Pathuru, Andhra Pradesh, India
+
+---
+
+## 💓 Dedication
+
+This project is lovingly dedicated to **Suresh Swamy Naidu Pragada** — a father whose traditional fertilizer shop in Pathuru village inspired every line of code.
 
 ---
 
